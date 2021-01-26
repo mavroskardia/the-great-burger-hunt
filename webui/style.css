@@ -1,3 +1,48 @@
+/* ---------------------------------------------------
+Variables
+-----------------------------------------------------*/
+
+:root {
+  --base-unit: 16px;
+}
+
+
+/* ---------------------------------------------------
+General
+-----------------------------------------------------*/
+
+html {
+	box-sizing: border-box;
+}
+
+*,
+*:before,
+*:after {
+	box-sizing: inherit;
+}
+
+html {
+  font-family: sans-serif;
+  line-height: 1.15;
+  -webkit-text-size-adjust: 100%;
+  -ms-overflow-style: scrollbar;
+  -webkit-tap-highlight-color: transparent
+}
+
+
+.wrapper {
+  padding: 16px;
+
+  border: 1px solid red;
+}
+
+
+
+.text--center {
+  text-align: center;
+}
+
+
 .burger {
   position: absolute;
   animation: burger-bounce 1s infinite;
