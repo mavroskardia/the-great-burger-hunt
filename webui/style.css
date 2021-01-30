@@ -10,6 +10,9 @@ Variables + Helpers
   text-align: center;
 }
 
+.display--block {
+  display: block;
+}
 
 /* ---------------------------------------------------
 General
@@ -39,30 +42,38 @@ html {
   margin: 0 auto;
 }
 
-/* login */
-
 .logo {
-  margin: 0 auto;
+  position: relative;
+  margin: calc(var(--base-unit)*2) auto;
   height: 100px;
   width: 100px;
-
-  border: 1px solid red;
 }
 
-.login .nes-field {
+/* Forms */
+
+.login-form,
+.rate-form {
+  margin: calc(var(--base-unit)*2) 0;
+}
+
+.login-form .nes-field,
+.rate-form .nes-field,
+.rate-form .nes-select  {
   margin-top: calc(var(--base-unit) * 2);
 }
 
-.login button {
+.login-form button,
+.rate-form button {
   width: 100%;
   margin: calc(var(--base-unit) * 2) 0;
 }
 
 
+
+
 /* ---------------------------------------------------
 Icons + animations  
 -----------------------------------------------------*/
-
 
 
 .burger {

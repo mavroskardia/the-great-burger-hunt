@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>The Great Burger Hunt - Login</title>
+  <title>The Great Burger Hunt - It's Burger Time</title>
   <link rel="stylesheet" href="style.css">
   <!-- latest -->
   <link href="https://unpkg.com/nes.css@latest/css/nes.min.css" rel="stylesheet" />
@@ -14,19 +14,20 @@
     <div class="logo">
       <div class="burger"></div>
     </div>
-    <h1 class="text--center">Burger Aficionados</h1>
-    <form action="" class="login-form">
+    <h1 class="text--center">It's Burger Time</h1>
+    <form action="" class="rate-form">
       <section class="nes-container with-title">
-        <h3 class="title">Login</h3>
-        <div class="nes-field">
-          <label for="email">Email<i>*</i></label>
-          <input type="email" id="email" class="nes-input">
+        <h3 class="title">Rate a Burger</h3>
+        <label for="burger_select">Select a Burger<i>*</i></label>
+        <div class="nes-select">
+          <select required="" id="burger_select">
+            <option value="" disabled="" selected="" hidden="">Select...</option>
+            <option value="0">Burger 0</option>
+            <option value="1">Burger 1</option>
+          </select>
         </div>
-        <div class="nes-field">
-          <label for="email">Password<i>*</i></label>
-          <input type="password" id="password" class="nes-input">
-        </div>
-        <button type="button" class="nes-btn is-primary">Log in</button>
+    
+        <button type="button" class="nes-btn is-primary">Nom Nom</button>
         <a href="#" class="display--block text--center">Don't have an account? </a>
       </section>
     </form>
