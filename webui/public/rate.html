@@ -107,7 +107,7 @@
 
         // Get a reference to the database service so we track thier ratings
         var database = firebase.database();
-        const db_ref = database.ref('/users/' + uid);
+        const db_ref = database.ref(uid);
         var data = null;
         
         db_ref.on('value', ss => {
@@ -123,15 +123,20 @@
           let rating = [].filter.call(document.getElementsByName('rating'), e => e.checked)[0].value;                 
           let comment = document.getElementById('comment').value;       
           // submit rating          
-          database.ref(`/users/${uid}/${place_id}`).set({
+          database.ref(`${uid}/${place_id}`).set({
             rating: parseFloat(rating),
             comment: comment
           });          
         });
 
         document.getElementById('burger_select').addEventListener('change', e => {
-          let place_id = document.getElementById('burger_select').value;          
+          // clear existing comment
+          document.getElementById('comment').value = '';
+          
+          // if anything other than "Select..." is selected, enable the submit button
+          let place_id = document.getElementById('burger_select').value;
           document.getElementById('submit_rating').disabled = place_id == '0';
+          
           // update rating and comment if this place is already in the reviewed list
           let place_data = data[place_id];
           if (place_data) {
