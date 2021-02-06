@@ -18,7 +18,7 @@
     </div>
     <h1 class="text--center">Burger Aficionados</h1>
     <div id="firebaseui-auth-container"></div>
-    <form action="" class="login-form">
+    <!--form action="" class="login-form">
       <section class="nes-container with-title">
         <h3 class="title">Login</h3>
         <div class="nes-field">
@@ -32,17 +32,18 @@
         <button type="button" class="nes-btn is-primary">Log in</button>
         <a href="#" class="display--block text--center">Don't have an account? </a>
       </section>
-    </form>
+    </form-->
     <footer class="text--center">
       Made with <i class="nes-icon heart"></i> by nerds
     </footer>
   </div>
 
   <!-- The core Firebase JS SDK is always required and must be listed first -->
-  <script src="/__/firebase/8.2.4/firebase-app.js"></script>
+  <script src="/__/firebase/8.2.6/firebase-app.js"></script>
 
   <!-- TODO: Add SDKs for Firebase products that you want to use
       https://firebase.google.com/docs/web/setup#available-libraries -->
+  <script src="https://www.gstatic.com/firebasejs/8.2.6/firebase-auth.js"></script>      
 
   <!-- Initialize Firebase -->
   <script src="/__/firebase/init.js"></script>
@@ -51,7 +52,7 @@
   <script type="text/javascript">
     // FirebaseUI config.
     var uiConfig = {
-      signInSuccessUrl: 'the-great-burger-hunt.firebaseapp.com/rate.html',
+      signInSuccessUrl: '/rate.html',
       signInOptions: [
         // Leave the lines as is for the providers you want to offer your users.
         firebase.auth.GoogleAuthProvider.PROVIDER_ID      
