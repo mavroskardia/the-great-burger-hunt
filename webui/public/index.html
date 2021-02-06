@@ -8,6 +8,9 @@
   <!-- latest -->
   <link href="https://unpkg.com/nes.css@latest/css/nes.min.css" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css?family=Press+Start+2P" rel="stylesheet">
+  
+  <script src="https://www.gstatic.com/firebasejs/ui/4.7.3/firebase-ui-auth.js"></script>
+  <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/4.7.3/firebase-ui-auth.css" />
 </head>
 <body>
   <div class="wrapper">
@@ -15,6 +18,7 @@
       <div class="burger"></div>
     </div>
     <h1 class="text--center">Burger Aficionados</h1>
+    <div id="firebaseui-auth-container"></div>
     <form action="" class="login-form">
       <section class="nes-container with-title">
         <h3 class="title">Login</h3>
@@ -45,6 +49,30 @@
 
 <!-- Initialize Firebase -->
 <script src="/__/firebase/init.js"></script>
+
+<script type="text/javascript">
+  // FirebaseUI config.
+  var uiConfig = {
+    signInSuccessUrl: 'the-great-burger-hunt.firebaseapp.com/rate.html',
+    signInOptions: [
+      // Leave the lines as is for the providers you want to offer your users.
+      firebase.auth.GoogleAuthProvider.PROVIDER_ID      
+    ]
+    // tosUrl and privacyPolicyUrl accept either url string or a callback
+    // function.
+    // Terms of service url/callback.
+    // tosUrl: '<your-tos-url>',
+    // Privacy policy url/callback.
+    // privacyPolicyUrl: function() {
+    //   window.location.assign('<your-privacy-policy-url>');
+    // }
+  };
+
+  // Initialize the FirebaseUI Widget using Firebase.
+  var ui = new firebaseui.auth.AuthUI(firebase.auth());
+  // The start method will wait until the DOM is loaded.
+  ui.start('#firebaseui-auth-container', uiConfig);
+</script>
 
 </body>
 </html>
