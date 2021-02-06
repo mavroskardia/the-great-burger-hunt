@@ -62,6 +62,10 @@ html {
   margin-top: calc(var(--base-unit) * 2);
 }
 
+.rate-form .nes-select::after {
+  top: 50%;
+}
+
 .login-form button,
 .rate-form button {
   width: 100%;

@@ -14,25 +14,43 @@
     <div class="logo">
       <div class="burger"></div>
     </div>
-    <h1 class="text--center">It's Burger Time</h1>
+    <h2 class="text--center">It's Burger Time</h2>
     <form action="" class="rate-form">
       <section class="nes-container with-title">
         <h3 class="title">Rate a Burger</h3>
-        <label for="burger_select">Select a Burger<i>*</i></label>
         <div class="nes-select">
+          <label for="burger_select">Select a Burger<i class="text-red">*</i</label>
           <select required="" id="burger_select">
-            <option value="" disabled="" selected="" hidden="">Select...</option>
-            <option value="0">Burger 0</option>
-            <option value="1">Burger 1</option>
+            <option value="0">Select...</option>
+            <option value="Bev's Better Burgers">Bev's Better Burgers</option>
+            <option value="Cry Baby's">Cry Baby's</option>
+            <option value="Dick Mondell's">Dick Mondell's</option>
+            <option value="Fast Eddys">Fast Eddys</option>
+            <option value="Macs">Macs</option>
+            <option value="Public and General">Public and General</option>
+            <option value="Relish">Relish</option>
+            <option value="Sandwich Inn">Sandwich Inn</option>
+            <option value="Swamp Religion">Swamp Religion</option>
           </select>
         </div>
-    
+        <div class="nes-field">
+          <label for="textarea_field">Rating<i class="text-red">*</i></label>
+          <input type="radio" value="1" name="rating">
+          <input type="radio" value="2" name="rating">
+          <input type="radio" value="3" name="rating">
+          <input type="radio" value="4" name="rating">
+          <input type="radio" value="5" name="rating">
+        </div>
+        <div class="nes-field">
+          <label for="textarea_field">Textarea</label>
+          <textarea id="textarea_field" class="nes-textarea"></textarea>
+        </div>
         <button type="button" class="nes-btn is-primary">Nom Nom</button>
-        <a href="#" class="display--block text--center">Don't have an account? </a>
+
       </section>
     </form>
     <footer class="text--center">
-      Made with <i class="nes-icon heart"></i> by nerds
+      Made with <i class="nes-icon heart"></i> by nerds who love burgers
     </footer>
   </div>
 
