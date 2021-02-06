@@ -49,6 +49,10 @@ html {
   width: 100px;
 }
 
+footer {
+  margin: calc(var(--base-unit)*2) auto;
+}
+
 /* Forms */
 
 .login-form,
