@@ -22,20 +22,20 @@
           <label for="burger_select">Select a Burger<i class="text-red">*</i</label>
           <select required="" id="burger_select">
             <option value="0">Select...</option>
-            <option value="Bev's Better Burgers">Bev's Better Burgers</option>
-            <option value="Cry Baby's">Cry Baby's</option>
-            <option value="Dick Mondell's">Dick Mondell's</option>
-            <option value="Fast Eddys">Fast Eddys</option>
-            <option value="Macs">Macs</option>
-            <option value="Public and General">Public and General</option>
-            <option value="Relish">Relish</option>
-            <option value="Sandwich Inn">Sandwich Inn</option>
-            <option value="Swamp Religion">Swamp Religion</option>
+            <option value="bevs">Bev's Better Burgers</option>
+            <option value="cry_babys">Cry Baby's</option>
+            <option value="dicks">Dick Mondell's</option>
+            <option value="fast_eddies">Fast Eddie's</option>
+            <option value="macs">Macs</option>
+            <option value="public_and_general">Public and General</option>
+            <option value="relish">Relish</option>
+            <option value="sandwich_inn">Sandwich Inn</option>
+            <option value="swamp_religion">Swamp Religion</option>
           </select>
         </div>
         <div class="nes-field">
           <label for="textarea_field">Rating<i class="text-red">*</i></label>
-          <input type="radio" value="1" name="rating">
+          <input type="radio" value="1" name="rating" checked>
           <input type="radio" value="2" name="rating">
           <input type="radio" value="3" name="rating">
           <input type="radio" value="4" name="rating">
@@ -43,9 +43,9 @@
         </div>
         <div class="nes-field">
           <label for="textarea_field">Textarea</label>
-          <textarea id="textarea_field" class="nes-textarea"></textarea>
+          <textarea id="comment" class="nes-textarea"></textarea>
         </div>
-        <button type="button" class="nes-btn is-primary">Nom Nom</button>
+        <button type="button" id="submit_rating" class="nes-btn is-primary" disabled>Nom Nom</button>
 
       </section>
     </form>
@@ -63,43 +63,89 @@
   <script src="https://www.gstatic.com/firebasejs/8.2.6/firebase-database.js"></script>
 
   <!-- Initialize Firebase -->
-  <script src="/__/firebase/init.js"></script>
+  <script src="/__/firebase/init.js?useEmulator=true"></script>
 
   <script type="text/javascript">
     initApp = function() {
       firebase.auth().onAuthStateChanged(function(user) {
-        if (user) {
-          // User is signed in.
-          var displayName = user.displayName;
-          var email = user.email;
-          var emailVerified = user.emailVerified;
-          var photoURL = user.photoURL;
-          var uid = user.uid;
-          var phoneNumber = user.phoneNumber;
-          var providerData = user.providerData;
-          user.getIdToken().then(function(accessToken) {
-            document.getElementById('sign-in-status').textContent = 'Signed in';
-            document.getElementById('sign-in').textContent = 'Sign out';
-            document.getElementById('account-details').textContent = JSON.stringify({
-              displayName: displayName,
-              email: email,
-              emailVerified: emailVerified,
-              phoneNumber: phoneNumber,
-              photoURL: photoURL,
-              uid: uid,
-              accessToken: accessToken,
-              providerData: providerData
-            }, null, '  ');
-          });
-        } else {
+        if (!user) {
           // User is signed out.
-          document.getElementById('sign-in-status').textContent = 'Signed out';
-          document.getElementById('sign-in').textContent = 'Sign in';
-          document.getElementById('account-details').textContent = 'null';
+          window.location.href='/';
+          return;
         }
+
+        // User is signed in, build page around user
+        var displayName = user.displayName;
+        var email = user.email;
+        var emailVerified = user.emailVerified;
+        var photoURL = user.photoURL;
+        var uid = user.uid;
+        var phoneNumber = user.phoneNumber;
+        var providerData = user.providerData;
+
+        user.getIdToken().then(function(accessToken) {
+          document.getElementById('sign-in-status').textContent = 'Signed in';
+          
+          // build a signout link
+          let signoutElt = document.createElement('a');
+          signoutElt.setAttribute('href', '#');
+          signoutElt.addEventListener('click', () => { firebase.auth().signOut(); window.location.href='/' });
+          signoutElt.innerText = 'Sign out';
+          document.getElementById('sign-in').appendChild(signoutElt);
+
+          document.getElementById('account-details').textContent = JSON.stringify({
+            displayName: displayName,
+            email: email,
+            emailVerified: emailVerified,
+            phoneNumber: phoneNumber,
+            photoURL: photoURL,
+            uid: uid,
+            accessToken: accessToken,
+            providerData: providerData
+          }, null, '  ');
+        });
+
+        // Get a reference to the database service so we track thier ratings
+        var database = firebase.database();
+        const db_ref = database.ref('/users/' + uid);
+        var data = null;
+        
+        db_ref.on('value', ss => {
+          // something changed about the db ref (like data first being populated)
+          data = ss.val();
+          console.log(data);
+        });
+
+        document.getElementById('submit_rating').addEventListener('click', e => {
+          // get the place id -- should be one of the valid IDs because we are blocking the button until that's true (TODO: style disabled button)
+          let place_id = document.getElementById('burger_select').value;
+          // get rating value; not bothering to make sure it returns at least one since we set a default checked radio
+          let rating = [].filter.call(document.getElementsByName('rating'), e => e.checked)[0].value;                 
+          let comment = document.getElementById('comment').value;       
+          // submit rating          
+          database.ref(`/users/${uid}/${place_id}`).set({
+            rating: parseFloat(rating),
+            comment: comment
+          });          
+        });
+
+        document.getElementById('burger_select').addEventListener('change', e => {
+          let place_id = document.getElementById('burger_select').value;          
+          document.getElementById('submit_rating').disabled = place_id == '0';
+          // update rating and comment if this place is already in the reviewed list
+          let place_data = data[place_id];
+          if (place_data) {
+            // set the right star level
+            [].filter.call(document.getElementsByName('rating'), e => e.value == place_data.rating)[0].checked = true;
+            // update the comment box
+            document.getElementById('comment').value = place_data.comment;
+          }
+        });
+
       }, function(error) {
         console.log(error);
       });
+
     };
 
     window.addEventListener('load', function() {
