@@ -45,7 +45,23 @@
       vertical-align: inherit;
     }
 
+    .firebaseui-idp-list, 
+    .firebaseui-tenant-list {
+      margin: 0!important;
+      padding: 0!important;
+    }
+
+    .firebaseui-idp-list > .firebaseui-list-item, 
+    .firebaseui-tenant-list > .firebaseui-list-item {
+      padding: 0 !important;
+      margin: 0!important;
+    }
+
     /* Now re-style it */
+
+    .firebaseui-card-content {
+      padding: 16px 0!important;
+    }
 
     .firebaseui-idp-icon-wrapper {
       display: none;
@@ -85,6 +101,11 @@
       background-color: #108de0!important;
     }
 
+    .firebaseui-idp-google > .firebaseui-idp-text {
+      font-size: 14px;
+      font-family: "Press Start 2P";
+    }
+
     @media (-webkit-min-device-pixel-ratio: 0) and (min-resolution: 0.001dpcm) {
       .firebaseui-idp-button {
         border-image-repeat: space;
@@ -105,7 +126,7 @@
     <div class="nes-container with-title is-centered">
       <p class="title">Welcome, Burger Aficionados.</p>
       <div id="firebaseui-auth-container"></div>
-    </div>
+   </div>
     <footer class="text--center">
       Made with <i class="nes-icon heart"></i> by nerds who love burgers
     </footer>
