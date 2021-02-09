@@ -19,7 +19,7 @@
       <section class="nes-container with-title">
         <h3 class="title">Rate a Burger</h3>
         <div class="nes-select">
-          <label for="burger_select">Select a Burger<i class="text-red">*</i</label>
+          <label for="burger_select">Select a Burger<i class="text--red">*</i></label>
           <select required="" id="burger_select">
             <option value="0">Select...</option>
             <option value="bevs">Bev's Better Burgers</option>
@@ -34,15 +34,30 @@
           </select>
         </div>
         <div class="nes-field">
-          <label for="textarea_field">Rating<i class="text-red">*</i></label>
-          <input type="radio" value="1" name="rating" checked>
-          <input type="radio" value="2" name="rating">
-          <input type="radio" value="3" name="rating">
-          <input type="radio" value="4" name="rating">
-          <input type="radio" value="5" name="rating">
+          <label>Rating<i class="text--red">*</i></label>
+          <div class="rating-wrapper">
+            <input type="radio" value="1" id="1" name="rating">
+            <label for="1"></label>
+          </div>
+          <div class="rating-wrapper">
+            <input type="radio" value="2" id="2" name="rating">
+            <label for="2"></label>
+          </div>
+          <div class="rating-wrapper">
+            <input type="radio" value="3" id="3" name="rating">
+            <label for="3"></label>
+          </div>
+          <div class="rating-wrapper">
+            <input type="radio" value="4" id="4" name="rating">
+            <label for="4"></label>
+          </div>
+          <div class="rating-wrapper">
+            <input type="radio" value="5" id="5" name="rating">
+            <label for="5"></label>
+          </div>
         </div>
         <div class="nes-field">
-          <label for="textarea_field">Textarea</label>
+          <label for="textarea_field">Comments</label>
           <textarea id="comment" class="nes-textarea"></textarea>
         </div>
         <button type="button" id="submit_rating" class="nes-btn is-primary" disabled>Nom Nom</button>
