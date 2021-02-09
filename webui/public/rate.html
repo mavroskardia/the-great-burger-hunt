@@ -145,12 +145,15 @@
         });
 
         document.getElementById('burger_select').addEventListener('change', e => {
-          // clear existing comment
-          document.getElementById('comment').value = '';
-          
+
           // if anything other than "Select..." is selected, enable the submit button
           let place_id = document.getElementById('burger_select').value;
           document.getElementById('submit_rating').disabled = place_id == '0';
+
+          // clear existing comment
+          document.getElementById('comment').value = '';
+
+          if (!data) return; // can't do anything else until there is some data to be had          
           
           // update rating and comment if this place is already in the reviewed list
           let place_data = data[place_id];
