@@ -60,7 +60,7 @@
           <label for="textarea_field">Comments</label>
           <textarea id="comment" class="nes-textarea"></textarea>
         </div>
-        <button type="button" id="submit_rating" class="nes-btn is-primary" disabled>Nom Nom</button>
+        <button type="button" id="submit_rating" class="nes-btn is-primary is-disabled" disabled>Nom Nom</button>
 
       </section>
     </form>
@@ -133,7 +133,9 @@
 
         document.getElementById('submit_rating').addEventListener('click', e => {
           // get the place id -- should be one of the valid IDs because we are blocking the button until that's true (TODO: style disabled button)
-          let place_id = document.getElementById('burger_select').value;
+          let place_elt = document.getElementById('burger_select');
+          let place_name = place_elt.querySelector('option:checked').innerText;
+          let place_id = place_elt.value;
           // get rating value; not bothering to make sure it returns at least one since we set a default checked radio
           let rating = [].filter.call(document.getElementsByName('rating'), e => e.checked)[0].value;                 
           let comment = document.getElementById('comment').value;       
@@ -141,14 +143,27 @@
           database.ref(`${uid}/${place_id}`).set({
             rating: parseFloat(rating),
             comment: comment
-          });          
+          });
+          
+          document.getElementById('comment').value = '';
+          document.getElementById('burger_select').selectedIndex = 0;
+          [].forEach.call(document.getElementsByName('rating'), e=>{e.checked = false; e.classList.remove('selected')});
+          let submit_elt = document.getElementById('submit_rating');
+          submit_elt.classList.add('is-disabled');
+          submit_elt.disabled = true;
+
+          alert(`Successfully submitted your rating!\n\n\t${place_name}\n\n\t${rating} star\n\n\t"${comment}"!`);
         });
 
         document.getElementById('burger_select').addEventListener('change', e => {
 
           // if anything other than "Select..." is selected, enable the submit button
           let place_id = document.getElementById('burger_select').value;
-          document.getElementById('submit_rating').disabled = place_id == '0';
+          let submit_elt = document.getElementById('submit_rating');
+          submit_elt.disabled = place_id == '0';
+
+          if (submit_elt.disabled) submit_elt.classList.add('is-disabled');
+          else submit_elt.classList.remove('is-disabled');
 
           // clear existing comment
           document.getElementById('comment').value = '';
@@ -163,6 +178,19 @@
             // update the comment box
             document.getElementById('comment').value = place_data.comment;
           }
+        });
+
+        let ratingsElts = document.getElementsByName('rating');
+        // go over each 'rating' radio
+        [].forEach.call(ratingsElts, ratingElt => {
+          // attach click event listener to each radio
+          ratingElt.addEventListener('click', clickEvent => {
+            // remove all 'selected' classes from the radios            
+            [].forEach.call(ratingsElts, elt => elt.classList.remove('selected'));
+            // add 'selected' to this radio and all previous            
+            [].filter.call(ratingsElts, elt => parseInt(elt.value) <= parseInt(ratingElt.value))
+              .forEach(elt => elt.classList.add('selected'));
+          });
         });
 
       }, function(error) {
