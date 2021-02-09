@@ -137,7 +137,7 @@
           let place_name = place_elt.querySelector('option:checked').innerText;
           let place_id = place_elt.value;
           // get rating value; not bothering to make sure it returns at least one since we set a default checked radio
-          let rating = [].filter.call(document.getElementsByName('rating'), e => e.checked)[0].value;                 
+          let rating = [].filter.call(document.getElementsByName('rating'), e => e.checked)[0].value
           let comment = document.getElementById('comment').value;       
           // submit rating          
           database.ref(`${uid}/${place_id}`).set({
@@ -148,6 +148,7 @@
           document.getElementById('comment').value = '';
           document.getElementById('burger_select').selectedIndex = 0;
           [].forEach.call(document.getElementsByName('rating'), e=>{e.checked = false; e.classList.remove('selected')});
+          document.getElementsByName('rating')[0].checked = true;
           let submit_elt = document.getElementById('submit_rating');
           submit_elt.classList.add('is-disabled');
           submit_elt.disabled = true;
@@ -174,7 +175,9 @@
           let place_data = data[place_id];
           if (place_data) {
             // set the right star level
-            [].filter.call(document.getElementsByName('rating'), e => e.value == place_data.rating)[0].checked = true;
+            let ratingElt = [].filter.call(document.getElementsByName('rating'), e => e.value == place_data.rating)[0];
+            ratingElt.checked = true;
+            setRating(parseInt(ratingElt.value));
             // update the comment box
             document.getElementById('comment').value = place_data.comment;
           }
@@ -184,13 +187,7 @@
         // go over each 'rating' radio
         [].forEach.call(ratingsElts, ratingElt => {
           // attach click event listener to each radio
-          ratingElt.addEventListener('click', clickEvent => {
-            // remove all 'selected' classes from the radios            
-            [].forEach.call(ratingsElts, elt => elt.classList.remove('selected'));
-            // add 'selected' to this radio and all previous            
-            [].filter.call(ratingsElts, elt => parseInt(elt.value) <= parseInt(ratingElt.value))
-              .forEach(elt => elt.classList.add('selected'));
-          });
+          ratingElt.addEventListener('click', clickEvent => setRating(parseInt(ratingElt.value)));
         });
 
       }, function(error) {
@@ -198,6 +195,13 @@
       });
 
     };
+
+    function setRating(rating) {
+      let ratingsElts = document.getElementsByName('rating');
+      [].forEach.call(ratingsElts, elt => elt.classList.remove('selected'));
+      [].filter.call(ratingsElts, elt => parseInt(elt.value) <= rating)
+        .forEach(elt => elt.classList.add('selected'));
+    }
 
     window.addEventListener('load', function() {
       initApp()
