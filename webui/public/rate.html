@@ -108,6 +108,9 @@
           signoutElt.innerText = 'Sign out';
           document.getElementById('sign-in').appendChild(signoutElt);
 
+          // clear ratings
+          [].forEach.call(document.getElementsByName('rating'), e => e.checked=false);
+
           document.getElementById('account-details').textContent = JSON.stringify({
             displayName: displayName,
             email: email,
@@ -126,9 +129,8 @@
         var data = null;
         
         db_ref.on('value', ss => {
-          // something changed about the db ref (like data first being populated)
+          // something changed about the db ref (like data first being populated), refresh our data object
           data = ss.val();
-          console.log(data);
         });
 
         document.getElementById('submit_rating').addEventListener('click', e => {
@@ -147,14 +149,15 @@
           
           document.getElementById('comment').value = '';
           document.getElementById('burger_select').selectedIndex = 0;
-          [].forEach.call(document.getElementsByName('rating'), e=>{e.checked = false; e.classList.remove('selected')});
-          document.getElementsByName('rating')[0].checked = true;
+          [].forEach.call(document.getElementsByName('rating'), e=>{e.checked = false; e.classList.remove('selected')});          
           let submit_elt = document.getElementById('submit_rating');
           submit_elt.classList.add('is-disabled');
           submit_elt.disabled = true;
 
           alert(`Successfully submitted your rating!\n\n\t${place_name}\n\n\t${rating} star\n\n\t"${comment}"!`);
         });
+
+        document.getElementById('comment').addEventListener('change', e => check_if_submit_should_be_disabled());
 
         document.getElementById('burger_select').addEventListener('change', e => {
 
