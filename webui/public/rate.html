@@ -158,7 +158,8 @@
           // submit rating          
           database.ref(`${uid}/${place_id}`).set({
             rating: parseFloat(rating),
-            comment: comment
+            comment: comment,
+            email: email
           });
           
           document.getElementById('comment').value = '';
