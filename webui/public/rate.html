@@ -10,11 +10,13 @@
   <link href="https://fonts.googleapis.com/css?family=Press+Start+2P" rel="stylesheet">
 </head>
 <body>
+  <img id="avatar" />
+  <div id="sign-in"></div>
   <div class="wrapper">
     <div class="logo">
       <div class="burger"></div>
     </div>
-    <h2 class="text--center">It's Burger Time</h2>
+    <h2 class="text--center">It's Burger Time</h2>    
     <form action="" class="rate-form">
       <section class="nes-container with-title">
         <h3 class="title">Rate a Burger</h3>
@@ -22,15 +24,15 @@
           <label for="burger_select">Select a Burger<i class="text--red">*</i></label>
           <select required="" id="burger_select">
             <option value="0">Select...</option>
-            <option value="bevs">Bev's Better Burgers</option>
-            <option value="cry_babys">Cry Baby's</option>
-            <option value="dicks">Dick Mondell's</option>
-            <option value="fast_eddies">Fast Eddie's</option>
-            <option value="macs">Macs</option>
-            <option value="public_and_general">Public and General</option>
-            <option value="relish">Relish</option>
-            <option value="sandwich_inn">Sandwich Inn</option>
-            <option value="swamp_religion">Swamp Religion</option>
+            <option value="sandwich_inn">Sandwich Inn 📅 2/26/2021</option>            
+            <option value="macs">Mac's 📅 3/5/2021</option>
+            <option value="bevs">Bev's Better Burgers 📅 TBD</option>
+            <option value="cry_babys">Cry Baby's 📅 TBD</option>
+            <option value="dicks">Dick Mondell's 📅 TBD</option>
+            <option value="fast_eddies">Fast Eddie's 📅 TBD</option>
+            <option value="public_and_general">Public and General 📅 TBD</option>
+            <option value="relish">Relish 📅 TBD</option>
+            <option value="swamp_religion">Swamp Religion 📅 TBD</option>
           </select>
         </div>
         <div class="nes-field">
@@ -54,6 +56,26 @@
           <div class="rating-wrapper">
             <input type="radio" value="5" id="5" name="rating">
             <label for="5"></label>
+          </div>
+          <div class="rating-wrapper">
+            <input type="radio" value="6" id="6" name="rating">
+            <label for="6"></label>
+          </div>
+          <div class="rating-wrapper">
+            <input type="radio" value="7" id="7" name="rating">
+            <label for="7"></label>
+          </div>
+          <div class="rating-wrapper">
+            <input type="radio" value="8" id="8" name="rating">
+            <label for="8"></label>
+          </div>
+          <div class="rating-wrapper">
+            <input type="radio" value="9" id="9" name="rating">
+            <label for="9"></label>
+          </div>
+          <div class="rating-wrapper">
+            <input type="radio" value="10" id="10" name="rating">
+            <label for="10"></label>
           </div>
         </div>
         <div class="nes-field">
@@ -84,7 +106,7 @@
     initApp = function() {
       firebase.auth().onAuthStateChanged(function(user) {
         if (!user) {
-          // User is signed out.
+          // User is signed out, send them back to the index (if someone blocked this it wouldn't really matter; they can't submit or anything unauthenticated).
           window.location.href='/';
           return;
         }
@@ -99,8 +121,7 @@
         var providerData = user.providerData;
 
         user.getIdToken().then(function(accessToken) {
-          document.getElementById('sign-in-status').textContent = 'Signed in';
-          
+         
           // build a signout link
           let signoutElt = document.createElement('a');
           signoutElt.setAttribute('href', '#');
@@ -108,19 +129,12 @@
           signoutElt.innerText = 'Sign out';
           document.getElementById('sign-in').appendChild(signoutElt);
 
+          // set avatar image
+          document.getElementById('avatar').src = photoURL;
+
           // clear ratings
           [].forEach.call(document.getElementsByName('rating'), e => e.checked=false);
-
-          document.getElementById('account-details').textContent = JSON.stringify({
-            displayName: displayName,
-            email: email,
-            emailVerified: emailVerified,
-            phoneNumber: phoneNumber,
-            photoURL: photoURL,
-            uid: uid,
-            accessToken: accessToken,
-            providerData: providerData
-          }, null, '  ');
+          
         });
 
         // Get a reference to the database service so we track thier ratings
@@ -155,6 +169,7 @@
           submit_elt.disabled = true;
 
           alert(`Successfully submitted your rating!\n\n\t${place_name}\n\n\t${rating} star\n\n\t"${comment}"!`);
+
         });
 
         document.getElementById('comment').addEventListener('change', e => check_if_submit_should_be_disabled());
@@ -162,7 +177,7 @@
         document.getElementById('burger_select').addEventListener('change', e => {
 
           // clear existing comment and rating
-          document.getElementById('comment').value = '';
+          document.getElementById('comment').value = '';          
           [].forEach.call(document.getElementsByName('rating'), e=>{e.checked=false; e.classList.remove('selected')});
 
           // if anything other than "Select..." is selected, enable the submit button
@@ -181,6 +196,7 @@
             // update the comment box
             document.getElementById('comment').value = place_data.comment;
           }
+
         });
 
         let ratingsElts = document.getElementsByName('rating');
@@ -221,13 +237,8 @@
     window.addEventListener('load', function() {
       initApp()
     });
-  </script>
 
-  <div>
-    <div id="sign-in-status"></div>
-    <div id="sign-in"></div>
-    <div id="account-details"></div>
-  </div>
+  </script>
 
 </body>
 </html>
