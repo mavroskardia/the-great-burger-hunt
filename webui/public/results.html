@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Great Burger Hunt - It's Burger Time</title>
+  <link rel="stylesheet" href="style.css">
+  <!-- latest -->
+  <link href="https://unpkg.com/nes.css@latest/css/nes.min.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css?family=Press+Start+2P" rel="stylesheet">
+
+  <style>
+    table { width: 100%; }
+    .wrapper { max-width: none; }    
+  </style>
+
+</head>
+<body>
+  <img id="avatar" />
+  <div id="sign-in"></div>
+  <div class="wrapper">
+    <div class="logo">
+      <div class="burger"></div>
+    </div>
+    <h2 class="text--center">It's Burger Time</h2>    
+    <form action="" class="rate-form">
+      <section class="nes-container with-title">
+        <h3 class="title">Results</h3>
+
+        <h4>Places</h4>
+        <table>
+          <thead>
+            <tr>
+              <th>Place</th>
+              <th>Average</th>
+            </tr>
+          </thead>
+          <tbody id="places_body">            
+          </tbody>
+        </table>
+
+        <hr>
+
+        <h4>Raw</h4>
+        <table>
+          <thead>
+            <tr>
+              <th>Person</th>
+              <th>Place</th>
+              <th>Rating</th>
+              <th>Comment</th>
+            </tr>
+          </thead>
+          <tbody id="results_body">
+          </tbody>
+        </table>
+
+      </section>
+    </form>
+    <footer class="text--center">
+      Made with <i class="nes-icon heart"></i> by nerds who love 🍔
+    </footer>
+  </div>
+
+  <!-- The core Firebase JS SDK is always required and must be listed first -->
+  <script src="/__/firebase/8.2.6/firebase-app.js"></script>
+
+  <!-- TODO: Add SDKs for Firebase products that you want to use
+      https://firebase.google.com/docs/web/setup#available-libraries -->
+  <script src="https://www.gstatic.com/firebasejs/8.2.6/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.2.6/firebase-database.js"></script>
+
+  <!-- Initialize Firebase -->
+  <script src="/__/firebase/init.js?useEmulator=true"></script>
+
+  <script type="text/javascript">
+    let place_map = {
+      dicks: 'Dick Mondell\'s',
+      public_and_general: 'Public & General',
+      relish: 'Relish',
+      fast_eddies: 'Fast Eddie\'s',
+      sandwich_inn: 'Sandwich Inn',
+      macs: 'Mac\'s',
+      cry_babys: 'Cry Baby\'s',
+      swamp_religion: 'Swamp Religion',
+      bevs: 'Bev\'s'      
+    };
+
+    initApp = function() {
+      firebase.auth().onAuthStateChanged(function(user) {
+        if (!user) {
+          // User is signed out, send them back to the index (if someone blocked this it wouldn't really matter; they can't submit or anything unauthenticated).
+          window.location.href='/';
+          return;
+        }
+
+        // User is signed in, build page around user
+        var displayName = user.displayName;
+        var email = user.email;
+        var emailVerified = user.emailVerified;
+        var photoURL = user.photoURL;
+        var uid = user.uid;
+        var phoneNumber = user.phoneNumber;
+        var providerData = user.providerData;
+
+        user.getIdToken().then(function(accessToken) {
+         
+          // build a signout link
+          let signoutElt = document.createElement('a');
+          signoutElt.setAttribute('href', '#');
+          signoutElt.addEventListener('click', () => { firebase.auth().signOut(); window.location.href='/' });
+          signoutElt.innerText = 'Sign out';
+          document.getElementById('sign-in').appendChild(signoutElt);
+
+          // set avatar image
+          document.getElementById('avatar').src = photoURL;
+          
+        });
+
+        // Get a reference to the database service so we track thier ratings
+        var database = firebase.database();
+        const db_ref = database.ref();
+        
+        db_ref.on('value', ss => {
+          // something changed about the db ref (like data first being populated), refresh our data object
+          const data = ss.val();
+          const results_body = document.getElementById('results_body');
+
+          let places = {};
+
+          // turn the results object into the tablulation of the places
+          for (let uid in data) {
+            for (let place_id in data[uid]) {
+
+              if (!places[place_id]) places[place_id] = {ratings:[], average: 0};
+              places[place_id].ratings.push(data[uid][place_id].rating);
+              places[place_id].average = places[place_id].ratings.reduce((a,b) => (a+b)) / places[place_id].ratings.length;
+
+              results_body.innerHTML += `
+                  <tr>
+                    <td>${uid}</td>
+                    <td>${place_id}</td>
+                    <td>${data[uid][place_id].rating}</td>
+                    <td>${data[uid][place_id].comment}</td>
+                  </tr>`
+            }
+          }
+
+          // places sorted by rating          
+          let places_array = Object.keys(places).map(pid=>({place:place_map[pid], ...places[pid]}));
+          document.getElementById('places_body').innerHTML = places_array.sort((a,b) => b.average - a.average).map(p => `
+            <tr>
+              <td>${p.place}</td>
+              <td>${p.average}</td>
+            </tr>
+          `).join('');
+
+        });
+
+      }, function(error) {
+        console.log(error);
+      });
+
+    };
+
+    window.addEventListener('load', function() {
+      initApp();
+    });
+
+  </script>
+
+</body>
+</html>
