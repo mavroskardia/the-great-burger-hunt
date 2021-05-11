@@ -8,6 +8,16 @@
   <!-- latest -->
   <link href="https://unpkg.com/nes.css@latest/css/nes.min.css" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css?family=Press+Start+2P" rel="stylesheet">
+  <style>
+    .fanfare {
+      display: inline-block;
+      padding: 0.5rem;
+      outline: dashed 3px blue;
+      margin: 0 auto;
+      width: 100%;
+      text-align: center;
+    }
+  </style>
 </head>
 <body>
   <img id="avatar" />
@@ -16,11 +26,12 @@
     <div class="logo">
       <div class="burger"></div>
     </div>
-    <h2 class="text--center">It's Burger Time</h2>    
+    <h2 class="text--center">It's Burger Time</h2>
+    <a class="fanfare" href="/results.html">Results are in!</a>    
     <form action="" class="rate-form">
       <section class="nes-container with-title">
         <h3 class="title">Rate a Burger</h3>
-        <small>🌙 = after work stop</small>
+        <small>🌙 = after work stop</small>        
         <div class="nes-select">          
           <label for="burger_select">Select a Burger<i class="text--red">*</i></label>          
           <select required="" id="burger_select">
@@ -29,11 +40,13 @@
             <!--option value="macs">Mac's 📅 3/5/2021</option-->
             <!--option value="fast_eddies">Fast Eddie's 📅 3/12/2021</option-->
             <!--option value="relish">Relish (Downtown!) 📅 3/19</option-->
-            <option value="dicks">Dick Mondell's 📅 3/26</option>
-            <option value="swamp_religion">Swamp Religion 📅 4/2</option>
-            <option value="cry_babys">Cry Baby's 📅 🌙 4/9 🌙</option>
-            <option value="public_and_general">Public and General 📅 🌙 4/16 🌙</option>
-            <option value="bevs">Bev's Better Burgers 📅 4/23</option>
+            <!--option value="dicks">Dick Mondell's 📅 3/26</option-->
+            <!--option value="swamp_religion">Swamp Religion 📅 4/2</option-->
+            <!--option value="cry_babys">Cry Baby's 📅 🌙 4/9 🌙</option-->
+            <!--option value="public_and_general">Public and General 📅 🌙 4/16 🌙</option-->
+            <!--option value="goldies">Goldie's 📅 4/23</option-->
+            <!--option value="bevs">Bev's Better Burgers 📅 4/30</option-->
+            <option value="djs">DJ's Cast Iron Burgers 📅 TBD</option>
           </select>
         </div>
         <div class="nes-field">
@@ -138,10 +151,17 @@
           
         });
 
-        // Get a reference to the database service so we track thier ratings
+        // Get a reference to the database service so we track their ratings
         var database = firebase.database();
         const db_ref = database.ref(uid);
         var data = null;
+
+        // store user info
+        database.ref(`${uid}/user`).set({
+          "displayName": displayName,
+          "photoURL": photoURL,
+          "email": email
+        });
         
         db_ref.on('value', ss => {
           // something changed about the db ref (like data first being populated), refresh our data object

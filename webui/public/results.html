@@ -11,7 +11,12 @@
 
   <style>
     table { width: 100%; }
-    .wrapper { max-width: none; }    
+    .wrapper { max-width: none; }
+    .raw-results { font-size: 60%; border-top: solid 3px #000; margin-top: 1rem; padding-top: 1rem; }    
+    #places_body tr:first-child td:first-child::before,
+    #places_body tr:first-child td:first-child::after
+    { content: " 👑 "; }
+    
   </style>
 
 </head>
@@ -27,33 +32,29 @@
       <section class="nes-container with-title">
         <h3 class="title">Results</h3>
 
+        <button id="getcsv">Download CSV</button>
+
         <h4>Places</h4>
         <table>
-          <thead>
-            <tr>
-              <th>Place</th>
-              <th>Average</th>
-            </tr>
-          </thead>
           <tbody id="places_body">            
           </tbody>
         </table>
 
-        <hr>
-
-        <h4>Raw</h4>
-        <table>
-          <thead>
-            <tr>
-              <th>Person</th>
-              <th>Place</th>
-              <th>Rating</th>
-              <th>Comment</th>
-            </tr>
-          </thead>
-          <tbody id="results_body">
-          </tbody>
-        </table>
+        <div class="raw-results">
+          <h4>Raw</h4>
+          <table>
+            <thead>
+              <tr>
+                <th>Person</th>
+                <th>Place</th>
+                <th>Rating</th>
+                <th>Comment</th>
+              </tr>
+            </thead>
+            <tbody id="results_body">
+            </tbody>
+          </table>
+        </div>
 
       </section>
     </form>
@@ -83,7 +84,9 @@
       macs: 'Mac\'s',
       cry_babys: 'Cry Baby\'s',
       swamp_religion: 'Swamp Religion',
-      bevs: 'Bev\'s'      
+      goldies: 'Goldie\'s',
+      bevs: 'Bev\'s',      
+      djs: 'DJ\'s Cast Iron Burgers'
     };
 
     initApp = function() {
@@ -159,6 +162,50 @@
 
       }, function(error) {
         console.log(error);
+      });
+
+      document.getElementById('getcsv').addEventListener('click', e => {
+        // data looks like:
+        // { <uid>: { <placeid>: {rowdata}, user: {userdata} } }
+          
+        var database = firebase.database();
+        const db_ref = database.ref();
+
+        db_ref.on('value', ss => {
+          const data = ss.val();
+          // Want the CSV to look like:
+          // Person, Place, Rating, Comment
+          
+          let unfiltered_rowdata = Object.keys(data).map(k => data[k]); // [{place_id:{}, user:{}},...]          
+          let headers = ['Person', 'Place', 'Rating', 'Comment'];
+          let rowdata = [];
+
+          unfiltered_rowdata.forEach(ud => {
+            let dn = ud.uid;
+            if (ud.user) {
+              let dn = ud.user.displayName;
+              delete ud.user; // remove user from object
+            }
+            let rows = Object.keys(ud).map(pid => [JSON.stringify(dn), JSON.stringify(place_map[pid]), JSON.stringify(ud[pid].rating), JSON.stringify(ud[pid].comment)]);
+            rows.forEach(row => rowdata.push(row));
+          });
+
+          const replacer = (key, value) => value === null ? '' : value; // handle null values here
+          const csv = [
+            headers.join(','),
+            ...rowdata.map(row => row.join(','))
+          ].join('\r\n');
+
+          var elt = document.createElement('a');
+          elt.setAttribute('href', 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv));
+          elt.setAttribute('download', 'results.csv');
+          elt.style.display = 'none';
+          document.body.appendChild(elt);
+          elt.click();
+          document.body.removeChild(elt);
+
+        });
+
       });
 
     };
